@@ -1,0 +1,13 @@
+<form (submit)="$event.preventDefault()">
+  <h2>Lista de tareas</h2>
+
+  <input #taskInput type="text" name="addTask" id="addTask" placeholder="Añade tu tarea aquí" />
+  <button type="button" (click)="addTarea(taskInput.value); taskInput.value = ''">Add task</button>
+  <br />
+  @for (tarea of tareas; track tarea.id) {
+    <p>
+      <input type="checkbox" [checked]="tarea.status" (change)="toggleStatus(tarea.id)" />
+      {{ tarea.text }}
+    </p>
+  }
+</form>

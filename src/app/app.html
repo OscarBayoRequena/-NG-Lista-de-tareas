@@ -202,6 +202,7 @@
   }
 </style>
 
+<!--
 <main class="main">
   <div class="content">
     <div class="left-side">
@@ -246,8 +247,8 @@
       <h1>Hello, {{ title() }}</h1>
       <p>Congratulations! Your app is running. 🎉</p>
       <section>
-        <h1>Mi portfolio de desarrollo web</h1>
-        <p>Estoy retomando Angular y construyendo proyectos prácticos.</p>
+        <h1>Hola soy {{ nombre }}</h1>
+        <p>Y no sé si voy a {{ accion }}</p>
       </section>
     </div>
     <div class="divider" role="separator" aria-label="Divider"></div>
@@ -344,6 +345,20 @@
       </div>
     </div>
   </div>
+</main>
+-->
+<main class="main">
+  <!--<section>
+    <h1>
+      Hola soy <b style="font-weight: bold">{{ nombre }}</b>
+    </h1>
+    <h3>Hoy he clavado {{ clavitos }} clavitos.</h3>
+  </section>
+  <section>
+    <button (click)="increaseClavitos()">Clavar clavito</button>
+    <button (click)="decreaseClavitos()">Sacar clavito</button>
+  </section>-->
+  <lista-comp></lista-comp>
 </main>
 
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
