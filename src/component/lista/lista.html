@@ -1,13 +1,45 @@
-<form (submit)="$event.preventDefault()">
+<header>
   <h2>Lista de tareas</h2>
-
-  <input #taskInput type="text" name="addTask" id="addTask" placeholder="Añade tu tarea aquí" />
-  <button type="button" (click)="addTarea(taskInput.value); taskInput.value = ''">Add task</button>
-  <br />
-  @for (tarea of tareas; track tarea.id) {
-    <p>
-      <input type="checkbox" [checked]="tarea.status" (change)="toggleStatus(tarea.id)" />
-      {{ tarea.text }}
-    </p>
-  }
+  <h4>
+    Total: {{ tareas.length }} | Completadas: {{ completedTareas() }} |Restantes:
+    {{ remainingTareas() }}
+  </h4>
+</header>
+<form (submit)="$event.preventDefault(); onSubmit()">
+  <div>
+    <div id="input-task" class="list-section">
+      <input
+        #taskInput
+        type="text"
+        name="addTask"
+        id="addTask"
+        placeholder="Añade tu tarea aquí"
+        [value]="tareaInput"
+        (input)="tareaInput = taskInput.value"
+      />
+      <button type="submit">Add task</button>
+    </div>
+    <div id="filter-selector" class="list-section">
+      <select #taskFilter name="filter" id="filter" (change)="changeFilter(taskFilter.value)">
+        <option value="all">Todas</option>
+        <option value="completed">Completadas</option>
+        <option value="remaining">Pendientes</option>
+      </select>
+    </div>
+    <div id="listed-task" class="list-section">
+      @for (tarea of tareasFiltradas; track tarea.id) {
+        <div>
+          <input type="checkbox" [checked]="tarea.status" (change)="toggleStatus(tarea.id)" />
+          {{ tarea.text }}
+          <input
+            type="button"
+            [name]="'removeTask' + tarea.id"
+            [id]="'removeTask' + tarea.id"
+            (click)="removeTarea(tarea.id)"
+            value="X"
+          />
+        </div>
+      }
+    </div>
+  </div>
 </form>
