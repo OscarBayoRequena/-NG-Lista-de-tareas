@@ -23,11 +23,9 @@ export class Lista {
   get tareasFiltradas(): Tarea[] {
     switch (this.currFilter) {
       case 'completed':
-        return this.tareas.filter((tarea) => tarea.status === true);
-        break;
+        return this.tareas.filter((tarea) => tarea.status);
       case 'remaining':
-        return this.tareas.filter((tarea) => tarea.status === false);
-        break;
+        return this.tareas.filter((tarea) => !tarea.status);
       default:
         return this.tareas;
     }
@@ -55,24 +53,23 @@ export class Lista {
   toggleStatus(id: number): void {
     const tempTask = this.tareas.find((tarea) => tarea.id === id);
 
-    tempTask ? (tempTask.status = !tempTask.status) : '';
+    if (tempTask) {
+      tempTask.status = !tempTask.status;
+    }
   }
 
   //Data
   remainingTareas(): number {
-    return this.tareas.filter((tarea) => tarea.status === false).length;
+    return this.tareas.filter((tarea) => !tarea.status).length;
   }
 
   completedTareas(): number {
-    return this.tareas.filter((tarea) => tarea.status === true).length;
+    return this.tareas.filter((tarea) => tarea.status).length;
   }
 
   //View management
   changeFilter(selectedFilter: string): void {
     switch (selectedFilter) {
-      case 'all':
-        this.currFilter = FiltroTareas.Todas;
-        break;
       case 'completed':
         this.currFilter = FiltroTareas.Completadas;
         break;
