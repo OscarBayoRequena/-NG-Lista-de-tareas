@@ -1,0 +1,41 @@
+<section id="tasks-section" class="list-section">
+  @for (task of tasks; track task.id) {
+    <div [id]="'task-' + task.id" class="task-item">
+      <div class="task-controls">
+        <input
+          class="task-checkbox"
+          type="checkbox"
+          [checked]="task.done"
+          (change)="onToggle(task.id)"
+          [attr.aria-label]="'Completar: ' + task.text"
+        />
+      </div>
+      <span class="task-text">{{ task.text }}</span>
+
+      <div class="task-controls">
+        <button
+          class="task-delete"
+          type="button"
+          [name]="'removeTask' + task.id"
+          [id]="'removeTask' + task.id"
+          (click)="onDelete(task.id)"
+          [attr.aria-label]="'Borrar task: ' + task.text"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width="20"
+            height="20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <line x1="6" y1="6" x2="18" y2="18" />
+            <line x1="18" y1="6" x2="6" y2="18" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  }
+</section>

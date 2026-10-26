@@ -1,0 +1,67 @@
+<form class="list-container" (submit)="$event.preventDefault(); onSubmit()">
+  <section id="input-section" class="list-section">
+    <input
+      #taskInputText
+      type="text"
+      name="addTask"
+      id="addTaskField"
+      placeholder="Añade tu tarea aquí"
+      [value]="taskInput"
+      (input)="taskInput = taskInputText.value"
+    />
+    <button id="addTaskButton" type="submit">Add task</button>
+  </section>
+  <section id="filter-section" class="list-section">
+    <!--
+      <editor-fold desc="Legacy filter" defaultstate="collapsed">
+        <select #taskFilter name="filter" id="filter" (change)="onFilter(taskFilter.value)">
+          <option value="all">Todas</option>
+          <option value="completed">Completadas</option>
+          <option value="remaining">Pendientes</option>
+        </select>
+      </editor-fold>
+      -->
+    <div class="filter-option">
+      <label for="allRadio">
+        Todas
+        <input
+          [checked]="filter === 'all'"
+          #allRadio
+          type="radio"
+          id="allRadio"
+          name="filter"
+          value="all"
+          (change)="onFilter(allRadio.value)"
+        />
+      </label>
+    </div>
+    <div class="filter-option">
+      <label for="completedRadio">
+        Completadas
+        <input
+          [checked]="filter === 'completed'"
+          #completedRadio
+          type="radio"
+          id="completedRadio"
+          name="filter"
+          value="completed"
+          (change)="onFilter(completedRadio.value)"
+        />
+      </label>
+    </div>
+    <div class="filter-option">
+      <label for="remainingRadio">
+        Pendientes
+        <input
+          [checked]="filter === 'pending'"
+          #remainingRadio
+          type="radio"
+          id="remainingRadio"
+          name="filter"
+          value="remaining"
+          (change)="onFilter(remainingRadio.value)"
+        />
+      </label>
+    </div>
+  </section>
+</form>
