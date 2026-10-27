@@ -74,15 +74,15 @@
       <h2 class="main-title">Lista de tareas</h2>
       <div class="counters-container">
         <div class="counter-item">
-          <span class="counter-number all">{{ allTasks.length }}</span
+          <span class="counter-number all">{{ taskService.totalTasks() }}</span
           ><span>Totales:</span>
         </div>
         <div class="counter-item">
-          <span class="counter-number completed">{{ completedTasks }}</span
+          <span class="counter-number completed">{{ taskService.completedTasks() }}</span
           ><span>Completadas:</span>
         </div>
         <div class="counter-item">
-          <span class="counter-number remaining">{{ pendingTasks }}</span
+          <span class="counter-number remaining">{{ taskService.pendingTasks() }}</span
           ><span>Restantes: </span>
         </div>
       </div>

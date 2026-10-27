@@ -30,6 +30,8 @@
 
   border-radius: 0;
   border: none;
+
+  cursor: pointer;
 }
 @media (max-width: 400px) {
   #addTaskField {
@@ -74,6 +76,8 @@
   color: #f3f4f6;
   background-color: slategray;
   border-radius: 7px;
+
+  cursor: pointer;
 
   &:has(:checked) {
     font-weight: bolder;
