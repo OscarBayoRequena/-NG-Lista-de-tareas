@@ -24,6 +24,7 @@ export class TaskService {
   //private nextId = Math.max(0, ...this.tasks().map((task) => task.id)) + 1;
   private readonly _tasks = signal<Task[]>([]);
   private nextId = 1;
+  readonly isSaved = signal(false);
 
   constructor() {
     afterNextRender(() => {
@@ -38,6 +39,8 @@ export class TaskService {
   readonly completedTasks = computed(() => this._tasks().filter((task) => task.done).length);
   readonly pendingTasks = computed(() => this._tasks().filter((task) => !task.done).length);
 
+  private saveTimeout?: ReturnType<typeof setTimeout>;
+
   saveTasks(): void {
     //Protección porque el CLI ha creado en modo SSR (Server Side Rendering) el proyecto.
     //Entonces es como intentar acceder a localStorage en un servidor corriente: no existe.
@@ -45,23 +48,40 @@ export class TaskService {
     if (!this.isBrowser) {
       return;
     }
-    localStorage.setItem('tasks', JSON.stringify(this._tasks()));
+    if (this.saveTimeout) {
+      clearTimeout(this.saveTimeout);
+    }
+    this.saveTimeout = setTimeout(() => {
+      try {
+        localStorage.setItem('tasks', JSON.stringify(this._tasks()));
+        this.isSaved.set(true);
+      } catch (error) {
+        console.error(error);
+        this.isSaved.set(false);
+      } finally {
+        this.saveTimeout = undefined;
+      }
+    }, 1500);
   }
   retrieveTasks(): Task[] {
     //Protección porque el CLI ha creado en modo SSR (Server Side Rendering) el proyecto.
     //Entonces es como intentar acceder a localStorage en un servidor corriente: no existe.
     //Hay que forzar a que detecte que esta en un entorno de navegador y por tanto puede usar esa propiedad.
     if (!this.isBrowser) {
+      this.isSaved.set(true);
       return [];
     }
     const storedTasks = localStorage.getItem('tasks');
 
     if (storedTasks === null) {
-      return [
+      const mockTasks: Task[] = [
         { id: 1, text: 'Repasar TypeScript', done: true },
         { id: 2, text: 'Practicar Angular', done: false },
         { id: 3, text: 'Subir cambios a GitHub', done: false },
       ];
+      localStorage.setItem('tasks', JSON.stringify(mockTasks));
+      this.isSaved.set(true);
+      return mockTasks;
     }
 
     try {
@@ -70,10 +90,19 @@ export class TaskService {
       if (!Array.isArray(tasks)) {
         throw new Error("'El almacenamiento no contiene una lista de tareas'");
       }
+      this.isSaved.set(true);
       return tasks as Task[];
     } catch {
+      this.isSaved.set(true);
       return [];
     }
+  }
+
+  /*
+  getSearchedTasks(query: string): Task[] {
+    const tasks = this._tasks();
+
+    return tasks.filter((task) => task.text.toLowerCase().includes(query.toLowerCase()));
   }
 
   getFilteredTasks(filter: TaskFilters): Task[] {
@@ -87,7 +116,7 @@ export class TaskService {
       default:
         return tasks;
     }
-  }
+  }*/
 
   //CRUD
   addTask(text: string): void {
@@ -99,18 +128,42 @@ export class TaskService {
     const newTask: Task = { id: this.nextId++, text: sanitizedText, done: false };
 
     this._tasks.update((tasks) => [...tasks, newTask]);
+    this.isSaved.set(false);
     this.saveTasks();
+  }
+
+  getTasks(query: string, filter: TaskFilters): Task[] {
+    const tasks = this._tasks();
+    let filteredTasks: Task[] = [];
+
+    switch (filter) {
+      case 'completed':
+        filteredTasks = tasks.filter((task) => task.done);
+        break;
+      case 'pending':
+        filteredTasks = tasks.filter((task) => !task.done);
+        break;
+      default:
+        filteredTasks = tasks;
+    }
+
+    if (query !== '') {
+      return filteredTasks.filter((task) => task.text.toLowerCase().includes(query));
+    }
+    return filteredTasks;
   }
 
   toggleDone(id: number): void {
     this._tasks.update((tasks) =>
       tasks.map((task) => (task.id === id ? { ...task, done: !task.done } : task)),
     );
+    this.isSaved.set(false);
     this.saveTasks();
   }
 
   removeTask(id: number): void {
     this._tasks.update((tasks) => tasks.filter((task) => task.id !== id));
+    this.isSaved.set(false);
     this.saveTasks();
     //this.allTasks = this.allTasks.filter((tarea) => tarea.id !== id);
   }

@@ -71,7 +71,16 @@
   <lista-comp></lista-comp>-->
   <div class="main-container">
     <header>
-      <h2 class="main-title">Lista de tareas</h2>
+      <div class="top-line">
+        <h2 class="main-title">Lista de tareas</h2>
+        <span [id]="taskService.isSaved() ? 'synced' : 'not-synced'" class="sync-indicator">
+          @if (taskService.isSaved()) {
+            Guardado
+          } @else {
+            Guardando...
+          }
+        </span>
+      </div>
       <div class="counters-container">
         <div class="counter-item">
           <span class="counter-number all">{{ taskService.totalTasks() }}</span
@@ -88,12 +97,14 @@
       </div>
     </header>
     <app-task-form
-      [filter]="currFilter"
+      [filter]="currFilter()"
+      [search]="search()"
       (addTask)="addTask($event)"
       (changeFilter)="changeFilter($event)"
+      (updateSearch)="updateSearch($event)"
     ></app-task-form>
     <app-task-list
-      [tasks]="filteredTasks"
+      [tasks]="tasksToRender()"
       (toggleTask)="toggleDone($event)"
       (deleteTask)="removeTask($event)"
     ></app-task-list>

@@ -1,4 +1,15 @@
 <form class="list-container" (submit)="$event.preventDefault(); onSubmit()">
+  <section id="search-section" class="list-section">
+    <input
+      #taskSearch
+      type="text"
+      name="searchTask"
+      id="searchTaskField"
+      placeholder="Buscar tarea"
+      [value]="searchInput"
+      (input)="onSearch(taskSearch.value)"
+    />
+  </section>
   <section id="input-section" class="list-section">
     <input
       #taskInputText
